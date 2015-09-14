@@ -3,10 +3,28 @@
 App = React.createClass({
   mixins: [ReactMeteorData],
 
-  getMeteorData() {
+  getInitialState() {
     return {
-      tasks: Tasks.find({}, {sort: {createAt: -1}}).fetch()
+      hideCompleted: false
     }
+  },
+
+  getMeteorData() {
+    let query = {};
+    if (this.state.hideCompleted) {
+      // If hide completed is checked, filter tasks
+      query = {checked: {$ne: true}};
+    }
+    return {
+      tasks: Tasks.find(query, {sort: {createdAt: -1}}).fetch(),
+      incompleteCount: Tasks.find({checked: {$ne: true}}).count()
+    };
+  },
+
+  toggleHideCompleted() {
+    this.setState({
+      hideCompleted: ! this.state.hideCompleted
+    });
   },
 
   renderTasks() {
@@ -35,7 +53,16 @@ App = React.createClass({
     return (
       <div className="container">
         <header>
-          <h1>Todo List using Meteor and React</h1>
+          <h1>Todo List using Meteor and React ({this.data.incompleteCount})</h1>
+
+          <label className="hide-completed">
+            <input
+              type="checkbox"
+              readOnly={true}
+              checked={this.state.hideCompleted}
+              onClick={this.toggleHideCompleted} />
+            Hide Completed Tasks
+          </label>
 
           <form className="new-task" onSubmit={this.handleSubmit} >
             <input
@@ -43,6 +70,7 @@ App = React.createClass({
               ref="textInput"
               placeholder="Type to add new tasks" />
           </form>
+
         </header>
 
         <ul>
