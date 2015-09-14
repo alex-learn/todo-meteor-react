@@ -1,0 +1,12 @@
+DATE=`date`
+ROOT=/home/www
+app=`pwd`
+
+export NVM_DIR="$ROOT/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+
+  PIDS=$(ps -ef | grep meteor | awk '{ print $2 }')
+  for PID in $PIDS; do
+    (echo "$DATE : $PID : stopping $app ...") #> $LOG 2>&1
+      kill -9 $PID  #>> $LOG 2>&1
+  done

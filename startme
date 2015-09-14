@@ -1,0 +1,8 @@
+export NVM_DIR="$HOME/.nvm"
+export MONGO_URL="mongodb://alex:davis@ds055680.mongolab.com:55680/dev2bees"
+
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+[ ! -x /usr/local/bin/meteor ] && ( curl https://install.meteor.com/ | sh )
+
+nvm use
+/usr/local/bin/meteor
